@@ -1,0 +1,31 @@
+{
+  "ver": "2.2.0",
+  "uuid": "6d8a6cf2-8f1c-4cda-a444-8db3a436020e",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "subMetas": {
+    "JoystickBg": {
+      "ver": "1.0.3",
+      "uuid": "28eabac4-330f-4ae8-8597-e5dbd6e2940a",
+      "rawTextureUuid": "6d8a6cf2-8f1c-4cda-a444-8db3a436020e",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 1,
+      "trimY": 1,
+      "width": 148,
+      "height": 148,
+      "rawWidth": 150,
+      "rawHeight": 150,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
