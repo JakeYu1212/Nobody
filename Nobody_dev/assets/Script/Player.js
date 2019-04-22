@@ -30,15 +30,31 @@ cc.Class({
         
         // normal moving speed of the player
         speed: 0,
+        collider: cc.PolygonCollider
     },
 
     // LIFE-CYCLE CALLBACKS:
 
-    // onLoad () {},
+    onLoad: function () {
+        cc.director.getCollisionManager().enabled = true;
+        cc.director.getCollisionManager().enabledDebugDraw = true;
 
-    start () {
-
+        this.node.on(cc.Node.EventType.TOUCH_START, function (event) {
+            // 返回世界坐标
+            var touches = event.getTouches();
+            var touchLoc = touches[0].getLocation();
+            cc.log(touchLoc);
+            // https://docs.cocos.com/creator/api/zh/classes/Intersection.html 检测辅助类
+            if (cc.Intersection.pointInPolygon(touchLoc, this.collider.world.points)) {
+                cc.log("Hit!");
+            }
+            else {
+                cc.log("No hit");
+            }
+        }, this);
     },
+
+    // start () {},
 
     // update (dt) {},
 });

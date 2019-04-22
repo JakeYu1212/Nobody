@@ -57,9 +57,9 @@ cc.Class({
         },
  
  
-        _speed: 2000, //实际速度
-        _speed1: 2000, //一段速度
-        _speed2: 2000, //二段速度
+        _speed: 0, //实际速度
+        speed1: 0, //一段速度
+        speed2: 0, //二段速度
         _opacity: 0, //透明度
     },
 
@@ -69,7 +69,7 @@ cc.Class({
         // joy下的Joystick组件
         this._joyCom = this.node.parent.getComponent('JoyStick');
         // Joystick组件下的player节点
-        this._playerNode = this._joyCom.sprite;
+        this._playerNode = this._joyCom.player;
  
         if (this._joyCom.touchType == Common.TouchType.DEFAULT) {
             //对圆圈的触摸监听
@@ -77,19 +77,6 @@ cc.Class({
         }
     },
 
-    //对圆圈的触摸监听
-    _initTouchEvent: function () {
-        var self = this;
- 
-        self.node.on(cc.Node.EventType.TOUCH_START, this._touchStartEvent, self);
- 
-        self.node.on(cc.Node.EventType.TOUCH_MOVE, this._touchMoveEvent, self);
- 
-        // 触摸在圆圈内离开或在圆圈外离开后，摇杆归位，player速度为0
-        self.node.on(cc.Node.EventType.TOUCH_END, this._touchEndEvent, self);
-        self.node.on(cc.Node.EventType.TOUCH_CANCEL, this._touchEndEvent, self);
-    },
- 
     //更新移动目标
     update: function (dt) {
         switch (this._joyCom.directionType) {
@@ -105,6 +92,19 @@ cc.Class({
             default:
                 break;
         }
+    },
+
+    //对圆圈的触摸监听
+    _initTouchEvent: function () {
+        var self = this;
+ 
+        self.node.on(cc.Node.EventType.TOUCH_START, this._touchStartEvent, self);
+ 
+        self.node.on(cc.Node.EventType.TOUCH_MOVE, this._touchMoveEvent, self);
+ 
+        // 触摸在圆圈内离开或在圆圈外离开后，摇杆归位，player速度为0
+        self.node.on(cc.Node.EventType.TOUCH_END, this._touchEndEvent, self);
+        self.node.on(cc.Node.EventType.TOUCH_CANCEL, this._touchEndEvent, self);
     },
  
     //四个方向移动(上下左右)  
@@ -181,9 +181,9 @@ cc.Class({
  
         //如果半径
         if (distance < this._radius) {
-            this._speed = this._speed1;
+            this._speed = this.speed1;
         } else {
-            this._speed = this._speed2;
+            this._speed = this.speed2;
         }
     },
  
@@ -191,7 +191,7 @@ cc.Class({
         // 获取触摸位置的世界坐标转换成圆圈的相对坐标（以圆圈的锚点为基准）
         var touchPos = this.node.convertToNodeSpaceAR(event.getLocation());
         //触摸点与圆圈中心的距离
-        var distance = this._getDistance(touchPos, cc.p(0, 0));
+        var distance = this._getDistance(touchPos, cc.v2(0, 0));
         //圆圈半径
         var radius = this.node.width / 2;
         // 记录摇杆位置，给touch move使用
@@ -200,7 +200,7 @@ cc.Class({
         var posY = this.node.getPosition().y + touchPos.y;
         //手指在圆圈内触摸,控杆跟随触摸点
         if (radius > distance) {
-            this.dot.setPosition(cc.p(posX, posY));
+            this.dot.setPosition(cc.v2(posX, posY));
             return true;
         }
         return false;
@@ -208,23 +208,23 @@ cc.Class({
  
     _touchMoveEvent: function (event) {
         var touchPos = this.node.convertToNodeSpaceAR(event.getLocation());
-        var distance = this._getDistance(touchPos, cc.p(0, 0));
+        var distance = this._getDistance(touchPos, cc.v2(0, 0));
         var radius = this.node.width / 2;
         // 由于摇杆的postion是以父节点为锚点，所以定位要加上ring和dot当前的位置(stickX,stickY)
         var posX = this.node.getPosition().x + touchPos.x;
         var posY = this.node.getPosition().y + touchPos.y;
         if (radius > distance) {
-            this.dot.setPosition(cc.p(posX, posY));
+            this.dot.setPosition(cc.v2(posX, posY));
         } else {
             //控杆永远保持在圈内，并在圈内跟随触摸更新角度
-            var x = this.node.getPosition().x + Math.cos(this._getRadian(cc.p(posX, posY))) * radius;
-            var y = this.node.getPosition().y + Math.sin(this._getRadian(cc.p(posX, posY))) * radius;
-            this.dot.setPosition(cc.p(x, y));
+            var x = this.node.getPosition().x + Math.cos(this._getRadian(cc.v2(posX, posY))) * radius;
+            var y = this.node.getPosition().y + Math.sin(this._getRadian(cc.v2(posX, posY))) * radius;
+            this.dot.setPosition(cc.v2(x, y));
         }
         //更新角度
-        this._getAngle(cc.p(posX, posY));
+        this._getAngle(cc.v2(posX, posY));
         //设置实际速度
-        this._setSpeed(cc.p(posX, posY));
+        this._setSpeed(cc.v2(posX, posY));
  
     },
  
@@ -235,5 +235,4 @@ cc.Class({
 
     // start () {},
 
-    // update (dt) {},
 });

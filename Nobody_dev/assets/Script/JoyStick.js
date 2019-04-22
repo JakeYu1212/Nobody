@@ -59,7 +59,7 @@ cc.Class({
             type: Common.DirectionType,
             displayName: '方向类型', 
         },
-        sprite: {
+        player: {
             default: null,
             type: cc.Node,
             displayName: '操控的目标',
@@ -128,24 +128,24 @@ cc.Class({
         }
         // 以圆圈为锚点获取触摸坐标
         var touchPos = this.ring.node.convertToNodeSpaceAR(event.getLocation());
-        var distance = this.ring._getDistance(touchPos, cc.p(0, 0));
+        var distance = this.ring._getDistance(touchPos, cc.v2(0, 0));
         var radius = this.ring.node.width / 2;
  
         // 由于摇杆的postion是以父节点为锚点，所以定位要加上touch start时的位置
         var posX = this._stickPos.x + touchPos.x;
         var posY = this._stickPos.y + touchPos.y;
         if (radius > distance) {
-            this.dot.setPosition(cc.p(posX, posY));
+            this.dot.setPosition(cc.v2(posX, posY));
         } else {
             //控杆永远保持在圈内，并在圈内跟随触摸更新角度
-            var x = this._stickPos.x + Math.cos(this.ring._getRadian(cc.p(posX, posY))) * radius;
-            var y = this._stickPos.y + Math.sin(this.ring._getRadian(cc.p(posX, posY))) * radius;
-            this.dot.setPosition(cc.p(x, y));
+            var x = this._stickPos.x + Math.cos(this.ring._getRadian(cc.v2(posX, posY))) * radius;
+            var y = this._stickPos.y + Math.sin(this.ring._getRadian(cc.v2(posX, posY))) * radius;
+            this.dot.setPosition(cc.v2(x, y));
         }
         //更新角度
-        this.ring._getAngle(cc.p(posX, posY));
+        this.ring._getAngle(cc.v2(posX, posY));
         //设置实际速度
-        this.ring._setSpeed(cc.p(posX, posY));
+        this.ring._setSpeed(cc.v2(posX, posY));
     },
  
     _touchEndEvent: function () {
